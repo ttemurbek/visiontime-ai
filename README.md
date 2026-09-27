@@ -1,8 +1,24 @@
 # RoadSight — DaemonEye
 
-A local YOLO11n + tracking + geometry baseline for the **WIUT / Toyota traffic-event challenge**. It implements event intervals (Part A), a causal accident-risk curve (Part B), and a Flask video-upload demo.
+A YOLO11n + tracking + geometry baseline for the **WIUT / Toyota traffic-event challenge**. It implements event intervals (Part A), a causal accident-risk curve (Part B), and a deployed Flask video-upload demo. The same solution can also run locally and through the official evaluation scripts.
 
-**Current status:** the official runner, evaluator and example JSON files are included unchanged. The camera has not been calibrated on the organizer's footage. Actual sample-video predictions, sample EDA and measured accuracy are not available. `predictions_samples.json` is an empty placeholder, not a completed submission. The [public submission branch](https://github.com/ttemurbek/visiontime-ai/tree/daemon-eye-toyota) is `daemon-eye-toyota`; website deployment is pending.
+**Live demo:** [http://167.99.245.20:8088](http://167.99.245.20:8088). The public page is deployed and accessible. Use the HTTP address shown here; HTTPS is not yet verified.
+
+**Repository:** [ttemurbek/visiontime-ai](https://github.com/ttemurbek/visiontime-ai/tree/daemon-eye-toyota). The default branch is **`daemon-eye-toyota`**; the old `main` branch has been removed. The file-selection bug was fixed in commit [`5a4053e`](https://github.com/ttemurbek/visiontime-ai/commit/5a4053e). If a previously opened page still leaves the upload button disabled after choosing a valid video, refresh with **Ctrl+Shift+R**.
+
+**Evaluation status:** the official runner, evaluator and example JSON files are included unchanged. Synthetic-video software checks passed, but the camera has not been calibrated on the organizer's footage. Actual sample-video predictions, sample EDA and measured accuracy are unavailable because all four supplied Drive downloads returned quota errors. **`predictions_samples.json` is an empty placeholder, not an evaluated submission.**
+
+## O‘rtog‘ingiz qanday ishlatadi? / Uzbek demo guide
+
+1. Brauzerda **[demo saytini oching](http://167.99.245.20:8088/#analysis)**. Login yoki GitHub akkaunti kerak emas.
+2. **“Videoni shu yerga tashlang”** joyini bosib, MP4 faylni tanlang yoki faylni shu joyga tashlang. Limit: **2 daqiqa, 250 MB, 4K gacha**.
+3. Fayl nomi va video oynasi paydo bo‘lgach, **“Tahlilni boshlash”** tugmasini bosing. Sahifadagi holat tahlilning qaysi bosqichdaligini ko‘rsatadi; CPUda bir necha daqiqa olishi mumkin.
+4. Natijadagi hodisa belgisi yoki xavf grafigini bosing — video o‘sha vaqtga o‘tadi.
+5. **“Natijani JSON yuklash”** orqali hodisalar va xavf qiymatlarini saqlang.
+
+`RoadSight_test_20s.mp4` sun’iy test videosi yuklash va interfeysni sinash uchun yaratilgan. Unda **0 hodisa chiqishi mumkin**; bu haqiqiy yo‘l videosidagi aniqlik sinovi emas. Yuklangan video tahlil tugagach serverdan o‘chiriladi.
+
+Saytni o‘z kompyuteringizda ishlatish uchun [QUICKSTART_UZ.md](QUICKSTART_UZ.md) qo‘llanmasini yoki quyidagi **Setup** bo‘limini bajaring. GitHubdan yuklashda **`daemon-eye-toyota` → Code → Download ZIP** ni tanlang. O‘rtog‘ingizga demo havolasi va MP4 faylning o‘zini yuborish yetarli.
 
 ## Team
 
@@ -95,14 +111,24 @@ The EDA helper produces metadata, brightness, sampled object counts over time, a
 
 ## Demo and checks
 
+To run a separate local demo:
+
 ```bash
 python app.py
-python -m unittest discover -s tests -v
 ```
 
-Open `http://127.0.0.1:5000`. The local UI uploads MP4s and displays event intervals and the risk curve. Upload/runtime limits are enforced by `app.py`. This local address is not a publicly hosted judging URL.
+Open `http://127.0.0.1:5000`. This address points to your own computer. The publicly deployed demo is [http://167.99.245.20:8088](http://167.99.245.20:8088). Both show event intervals, a clickable risk curve and a downloadable JSON result. The web demo limits uploads to MP4, 120 seconds, 250 MB and at most 4K frame area. These demo limits do not replace the official evaluation harness.
 
-**Verified:** all 14 unit/regression tests passed. They cover geometry, the official interface, event boundaries, causal prefix independence and state reset. Separately, the unchanged official harness processed a synthetic 4.0-second, 640×360, 25-FPS clip using the real YOLO checkpoint: 0 events, 100 risk samples, 5.5 seconds on CPU against a 12-second budget. The official evaluator reported VALID with no errors or warnings. A repeat produced identical events/risk values (runtime 4.7 seconds). This is a software smoke test, not organizer-sample accuracy or a GPU benchmark.
+Run checks separately from the running server:
+
+```bash
+python -m unittest discover -s tests -v
+node tests/test_web_upload.cjs
+```
+
+Node.js is needed only for the browser-script regression fixture, not for running the Python demo. The regression invokes the actual JavaScript file-change and analysis handlers with a DOM fixture. It reproduces the previous missing-helper error and checks valid/invalid file selection, preview state, button enabling, asynchronous result/download handling, API error recovery and duration limits.
+
+**Verified:** all 14 Python unit/regression tests and the Node.js upload regression passed. They cover geometry, the official interface, event boundaries, causal prefix independence and state reset. Separately, the unchanged official harness processed a synthetic 4.0-second, 640×360, 25-FPS clip using the real YOLO checkpoint: 0 events, 100 risk samples, 5.5 seconds on CPU against a 12-second budget. The official evaluator reported VALID with no errors or warnings. A repeat produced identical events/risk values (runtime 4.7 seconds). This is a software smoke test, not organizer-sample accuracy or a GPU benchmark.
 
 ```bash
 docker build -t roadsight .
@@ -111,6 +137,20 @@ docker run --rm -p 5000:5000 roadsight
 docker run --rm -v /absolute/videos:/data/test:ro -v /absolute/output:/output roadsight python run_submission.py --videos /data/test --out /output/predictions.json --team DaemonEye
 ```
 
-The demo image installs CPU PyTorch, uses one Gunicorn worker to avoid loading multiple model copies, and honors `PORT` (default 5000). It includes the supplied weights or downloads them at build time if missing. This Docker image is intended for the CPU demo; use the local GPU installation for GPU judging. Hosting still requires a public destination and a successful upload test.
+The demo image installs CPU PyTorch, uses one Gunicorn worker to avoid loading multiple model copies, and honors `PORT` (default 5000). It includes the supplied weights or downloads them at build time if missing. This Docker image is intended for the CPU demo; use the local GPU installation for GPU judging.
+
+## Deployment
+
+The current demo runs on the existing DigitalOcean server at **[http://167.99.245.20:8088](http://167.99.245.20:8088)**. Its health endpoint is [`/health`](http://167.99.245.20:8088/health).
+
+The initial-deployment commands for an existing server are:
+
+```bash
+git clone --branch daemon-eye-toyota https://github.com/ttemurbek/visiontime-ai.git roadsight-daemon-eye
+cd roadsight-daemon-eye
+bash deploy/existing_server.sh 167.99.245.20
+```
+
+These are **first-install commands**, not an update command for the already-running container. The script stops if `daemon-eye-demo` already exists or port 8088 is occupied. See [deploy/README_UZ.md](deploy/README_UZ.md) for prerequisites, resource checks and log commands. The current deployment status is recorded in this README; the deployment guide also contains general pre-deployment checks.
 
 See [QUICKSTART_UZ.md](QUICKSTART_UZ.md), [REPORT.md](REPORT.md), [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The package uses no additional training dataset and no hosted inference API.
