@@ -88,9 +88,10 @@ Once actual sample MP4s and the weights are available:
 
 ```bash
 python tools/eda_samples.py --videos samples --out artifacts/eda
+python tools/render_samples.py --videos samples --pred predictions_samples.json --out artifacts/samples
 ```
 
-The helper produces metadata, brightness, per-frame object counts, approximate tracks and occupancy heatmaps. These counts are detections across frames, not unique vehicles. No real sample EDA is claimed until the tool has run on those files.
+The EDA helper produces metadata, brightness, sampled object counts over time, approximate tracks and occupancy heatmaps. The renderer creates annotated playback, event/risk timelines and an index from actual videos plus previously generated predictions; source timestamps remain in seconds. Sampled boxes are explicitly labeled. These counts are detections across frames, not unique vehicles. No real sample EDA is claimed until the tool has run on those files.
 
 ## Demo and checks
 
