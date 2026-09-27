@@ -6,6 +6,18 @@ const colors = {accident:"#fa776d",near_miss:"#f5c263",red_light:"#f68b68",wrong
 let selectedFile = null, objectUrl = null, videoDuration = 0, busy = false, riskPoints = [], currentEvents = [];
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+function showError(message) {
+  const errorBox = $("error");
+  errorBox.textContent = message;
+  errorBox.classList.remove("hidden");
+}
+
+function clearError() {
+  const errorBox = $("error");
+  errorBox.textContent = "";
+  errorBox.classList.add("hidden");
+}
+
 input.addEventListener("change", () => setFile(input.files[0]));
 zone.addEventListener("dragover", e => { e.preventDefault(); if (!busy) zone.classList.add("drag"); });
 zone.addEventListener("dragleave", () => zone.classList.remove("drag"));
