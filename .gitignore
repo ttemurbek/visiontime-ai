@@ -1,6 +1,10 @@
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
-data/*.db
-data/*.jsonl
-*.pt
+venv/
+uploads/
+weights/*.pt
+/predictions.json
+*.mp4
+*.MP4
+artifacts/

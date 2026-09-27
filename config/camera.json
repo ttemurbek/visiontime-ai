@@ -1,0 +1,22 @@
+{
+  "frame_stride": 3,
+  "road_polygon": [],
+  "crosswalk_polygons": [],
+  "queue_polygons": [],
+  "intersection_polygon": [],
+  "lanes": [],
+  "road_direction": null,
+  "signal_roi": null,
+  "red_signal_pixel_fraction": 0.015,
+  "stop_line": null,
+  "intersection_direction": null,
+  "solid_lines": [],
+  "prohibited_turns": [],
+  "u_turn_allowed": false,
+  "wrong_way_speed_px_s": 8,
+  "stationary_speed_px_s": 3,
+  "congestion_min_vehicles": 3,
+  "congestion_speed_px_s": 4,
+  "obstacle_class_names": [],
+  "notes": "Fill normalized image coordinates after inspecting the supplied camera videos."
+}

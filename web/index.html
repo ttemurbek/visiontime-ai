@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RoadSight — yo‘l hodisalarini aniqlash</title><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">R</span><span>ROAD<span class="accent">SIGHT</span></span></a>
+    <nav><a href="#approach">Yechim</a><a href="#eda">EDA</a><a href="#analysis">Demo</a><a href="#team">Jamoa</a><a href="/report" target="_blank" rel="noopener">Hisobot ↗</a></nav>
+    <span class="status"><i></i> BASELINE DEMO</span>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="line"></span> COMPUTER VISION · TRAFFIC SAFETY</div>
+      <h1>Yo‘ldagi xavfni<br><em>vaqtida ko‘ring.</em></h1>
+      <p>Statsionar kamera videosini tahlil qiling. Tizim transport va piyodalar harakatini kuzatib, aniqlangan hodisalarni vaqt chizig‘ida ko‘rsatadi.</p>
+      <a class="hero-cta" href="#analysis">Videoni tahlil qilish <span>↓</span></a>
+      <div class="hero-stat"><strong>14</strong><span>rasmiy sinf</span><b></b><strong>5s</strong><span>xavf ufqi</span><b></b><strong>120s</strong><span>demo limiti</span></div>
+    </section>
+    <section class="demo-section" id="analysis">
+      <div class="section-head"><div><div class="eyebrow">01 / LIVE WORKBENCH</div><h2>Videoni tekshiring</h2></div><p>Demo uchun MP4 yuklang. Natijalar shu sahifada vaqt chizig‘ida ko‘rsatiladi.</p></div>
+      <div class="workbench">
+        <div class="upload-panel">
+          <label class="dropzone" id="dropzone" for="video-input"><span class="upload-icon">↑</span><strong>Videoni shu yerga tashlang</strong><span>yoki fayl tanlash uchun bosing</span><small>MP4 · 2 daqiqagacha · 250 MB gacha</small></label>
+          <input id="video-input" type="file" accept="video/mp4,.mp4" hidden>
+          <div class="selected-file" id="selected-file">Hali video tanlanmagan</div>
+          <button id="analyze-btn" class="primary-button" disabled>Tahlilni boshlash <span>→</span></button>
+          <div id="progress" class="progress hidden" role="status" aria-live="polite"><div class="spinner"></div><span id="progress-text">Video tahlil qilinmoqda…</span></div><progress id="progress-bar" class="hidden" max="100"></progress><p class="upload-note">Tahlil serverda bajariladi. CPU da bir necha daqiqa olishi mumkin. Yuklangan video tahlildan keyin o‘chiriladi.</p><a id="download-json" class="download-button hidden" download>Natijani JSON yuklash ↓</a>
+          <div id="error" class="error hidden" role="alert"></div>
+        </div>
+        <div class="result-panel">
+          <div class="video-frame" id="video-frame"><div class="empty-video" id="empty-video"><div class="play-mark">▶</div><span>Video tanlansa shu yerda ko‘rinadi</span></div><video id="video" controls playsinline class="hidden"></video><div class="video-meta hidden" id="video-meta"><span id="meta-resolution">—</span><span id="meta-duration">—</span></div></div>
+          <div class="result-heading"><strong>HODISALAR VAQTI</strong><span id="event-count">0 hodisa</span></div>
+          <div id="timeline" class="timeline"><div class="timeline-empty">Tahlil natijasi hali yo‘q</div></div><div id="event-list" class="event-list"></div>
+          <div class="result-heading risk-heading"><strong>XAVF KO‘RSATKICHI</strong><span>keyingi 5 soniya · 0—1</span></div>
+          <canvas id="risk-chart" class="risk-chart" height="110" aria-label="Vaqt bo‘yicha xavf grafigi, 0 dan 1 gacha"></canvas><p class="chart-note">Grafikni bosib videoning shu vaqtiga o‘ting. Bu qoida asosidagi ko‘rsatkich; tekshirilgan avariya ehtimoli emas.</p><div id="risk-summary" class="risk-summary"></div>
+        </div>
+      </div>
+    </section>
+    <section class="eda" id="eda">
+      <div class="eyebrow">02 / SAMPLE VIDEO EDA</div><h2>Kamera oqimining profili</h2>
+      <p class="eda-copy" id="eda-status">Sample videolar bo‘yicha hisoblangan natijalar tekshirilmoqda…</p>
+      <div class="eda-grid" id="eda-grid"><article><small>SAMPLE STATUS</small><strong>—</strong><span>Hisoblangan ko‘rsatkichlar hali mavjud emas.</span></article></div>
+    </section>
+    <section class="approach" id="approach">
+      <div class="eyebrow">03 / HOW IT WORKS</div><h2>Kamera oqimidan hodisa belgisigacha</h2>
+      <div class="steps">
+        <article><span>01</span><h3>Obyektlarni topish</h3><p>Mahalliy YOLO modeli avtomobil, avtobus, mototsikl, velosiped va piyodalarni ajratadi.</p></article>
+        <article><span>02</span><h3>Harakatni kuzatish</h3><p>Kadrlar orasidagi joylashuv va tezlik o‘zgarishi yengil kuzatuvchi orqali hisoblanadi.</p></article>
+        <article><span>03</span><h3>Hodisani belgilash</h3><p>Yo‘l hududi, stop-chiziq va piyodalar o‘tish joyi qoidalari vaqt oralig‘iga aylantiriladi.</p></article>
+        <article><span>04</span><h3>Xavfni baholash</h3><p>Faqat shu paytgacha ko‘rilgan kadrlardan foydalaniladi. Yaqinlashuv va harakat qoidalari xavf ko‘rsatkichiga aylantiriladi.</p></article>
+      </div>
+      <div class="note"><b>Baseline cheklovlari.</b> Yo‘l zonalari, signal va chiziqlar har bir kamera uchun sozlanishi kerak. Barcha 14 sinfning interfeysi mavjudligi ularning barchasi ishonchli aniqlanishini anglatmaydi. Tutun/olov uchun alohida o‘qitilgan model yo‘q. <a href="/report" target="_blank" rel="noopener">Joriy texnik hisobotni o‘qing ↗</a></div>
+    </section>
+    <section class="team" id="team"><div><div class="eyebrow">04 / THE TEAM</div><h2>DaemonEye jamoasi</h2><p>Jamoa uch kishidan iborat. Vazifalar va profil havolalari hali kiritilmagan.</p><ul class="team-list"><li><strong>Tursunov Temurbek</strong><small>Vazifasi va profil havolasi kiritilmagan</small></li><li><strong>Nosirjonov Muxammadshaxzod</strong><small>Vazifasi va profil havolasi kiritilmagan</small></li><li><strong>Shukrullo</strong><small>Vazifasi va profil havolasi kiritilmagan</small></li></ul></div><div class="team-card"><span class="team-number">3/3</span><div><strong>Jamoa a’zolari</strong><small>Tursunov Temurbek · Nosirjonov Muxammadshaxzod · Shukrullo</small></div><span class="edit-mark">DAEMONEYE</span></div></section>
+    <footer><span>ROAD<span class="accent">SIGHT</span> · Traffic event baseline</span><span><a href="https://github.com/ttemurbek/visiontime-ai/tree/daemon-eye-toyota" target="_blank" rel="noopener">GitHub ↗</a> · <a href="/downloads/yolo11n.pt">Model vazni ↓</a> · <a href="/downloads/predictions_samples.json">Sample JSON (hali bo‘sh) ↓</a></span></footer>
+  </main><script src="/app.js"></script>
+</body>
+</html>

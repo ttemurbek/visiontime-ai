@@ -1,0 +1,26 @@
+{
+  "type": "software_smoke_test_only",
+  "test_date": "2026-09-27",
+  "unit_tests_passed": 14,
+  "model_weights_bytes": 5613764,
+  "official_scripts_unchanged": true,
+  "synthetic_video": {
+    "duration_sec": 4.0,
+    "fps": 25,
+    "width": 640,
+    "height": 360,
+    "frames": 100
+  },
+  "official_harness": {
+    "first_run_sec": 5.5,
+    "repeat_run_sec": 4.7,
+    "events": 0,
+    "risk_samples": 100,
+    "format": "VALID",
+    "prediction_outputs_equal_across_runs": true,
+    "note": "Official timing logs differ; event and risk outputs match."
+  },
+  "demo_end_to_end": "passed synthetic upload and async job",
+  "organizer_sample_accuracy": "not measured; Google Drive download quota blocked all provided videos",
+  "t4_runtime": "not measured"
+}
